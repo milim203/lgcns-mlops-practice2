@@ -21,7 +21,7 @@ FILE_HANDLER_FORMAT = (
 def get_file_handler(
     log_path: str = LOG_FILEPATH,
 ) -> logging.handlers.TimedRotatingFileHandler:
-    """로그 저장 파일 핸드러를 설정하는 함수
+    """로그 저장 파일 핸들러를 설정하는 함수
 
     Args:
         log_path (str, optional): 로그 저장 파일명. Defaults to LOG_FILEPATH.
@@ -33,10 +33,9 @@ def get_file_handler(
         log_path, when="midnight", interval=1, backupCount=30, encoding="utf-8"
     )
     file_handler.suffix = "logs-%Y%m%d"
-    # TODO: 파일 핸들러의 기본 수준을 INFO로 설정
-    
-    # TODO: 파일 핸들러의 포맷을 FILE_HANDLER_FORMAT으로 설정
-    
+    file_handler.setLevel(logging.INFO)
+    file_handler.setFormatter(logging.Formatter(FILE_HANDLER_FORMAT))
+
     return file_handler
 
 
@@ -56,11 +55,12 @@ def set_logger(log_path: str = LOG_FILEPATH) -> logging.Logger:
     )
 
     logger = logging.getLogger("rich")
-    
-    # TODO: 로거의 기본 수준을 DEBUG 설정
-    
-    # TODO: 기본 로거에 위에서 만든 파일 핸들러를 추가
-    
+
+    logger.setLevel(logging.DEBUG)
+    logger.addHandler(
+        get_file_handler(log_path=log_path)
+    )  # 기본 로거에 위에서 만든 파일 핸들러를 추가
+
     return logger
 
 
